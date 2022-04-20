@@ -1,9 +1,12 @@
 import {useState} from "react";
+import axios from 'axios';
 
 const NewPost = () => {
   const [id, setId] = useState();
   const [title, setTitle] = useState();
   const [body, setBody] = useState();
+  const [post, setPost] = useState();
+  const [posts, setPosts] = useState([]);
 
   const onSubmit = () => {
     console.log({
@@ -11,7 +14,27 @@ const NewPost = () => {
       title,
       body
     })
+    const newPost = <Post title={title} body={body} postID={id}/>
+    const updateArray = [...posts, newPost]
+    setPosts(updateArray);
   }
+  function clearInput() {
+    setId('')
+    setTitle('')
+    setBody('')
+  }
+
+  const postData = () => {
+    axios
+      .post('http://localhost:3002/post', {"id":id, "title": title, "body": body, "comments": []}) 
+      .then((response) => { clearInput(); })
+      .catch((error) => console.log(error)); 
+  }
+
+  useEffect(() => {
+    postData();
+  }, []);
+
 
   return <div>
     <div>
